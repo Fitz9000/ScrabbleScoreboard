@@ -17,8 +17,11 @@ var p1TurnWord;
 var p2TurnWord;
 
 var wordInput = document.getElementById("wordInput");
+var hasWordInput = false;
 var maxWordLength = 15;
 var wordScoreInput = document.getElementById("wordScoreInput");
+var hasWordScoreInput = false;
+
 var minWordScore = -999;
 var maxWordScore = 999;
 
@@ -99,49 +102,86 @@ submitButton.addEventListener("click", function() {
 
 	// If word is less than or equal to the max allowable length
 	if (wordInput.value !== "" && wordInput.value.length <= maxWordLength) {
+		hasWordInput = true;
+	} else {
+		errorAlert(wordInput, 4, 150);
+	}
 
-		// If a valid number is entered
-		if (wordScoreInput.value !== "" && wordScoreInput.value >= minWordScore && wordScoreInput.value <= maxWordScore) {
+	// If a valid number is entered
+	if (wordScoreInput.value !== "" && wordScoreInput.value >= minWordScore && wordScoreInput.value <= maxWordScore) {
+		hasWordScoreInput = true;
+	} else {
+		errorAlert(wordScoreInput, 4, 150);
+	}
 
-			// Define player 1 and player 2 move cells
-			defineCells();
+	// If both inputs are correct, process the word
+	if (hasWordInput && hasWordScoreInput) {
 
-			// Update corresponding player depending on whos turn it is
-			if (playerOneTurn === true) {
+		// Define player 1 and player 2 move cells
+		defineCells();
 
-				// Input player 1 data into the table
-				if (iTurn < maxTurn) {
-					p1TurnWord.textContent = wordInput.value;
-					p1TurnScore.textContent = wordScoreInput.value;
-				}
+		// Update corresponding player depending on whos turn it is
+		if (playerOneTurn === true) {
 
-				// Update player 1's score
-				p1TotalScore += Number(wordScoreInput.value);
-				p1DisplayScore.textContent = p1TotalScore;
-
-			} else {
-
-				// Input player 2 data into the table
-				if (iTurn < maxTurn) {
-					p2TurnWord.textContent = wordInput.value;
-					p2TurnScore.textContent = wordScoreInput.value;
-				}
-
-				// Update player 2's score
-				p2TotalScore += Number(wordScoreInput.value);
-				p2DisplayScore.textContent = p2TotalScore;
-
-				iTurn++;
+			// Input player 1 data into the table
+			if (iTurn < maxTurn) {
+				p1TurnWord.textContent = wordInput.value;
+				p1TurnScore.textContent = wordScoreInput.value;
 			}
 
-			// Reset turn data field
-			resetInputFields();
+			// Update player 1's score
+			p1TotalScore += Number(wordScoreInput.value);
+			p1DisplayScore.textContent = p1TotalScore;
 
-			// Update player
-			nextPlayer();
+		} else {
+
+			// Input player 2 data into the table
+			if (iTurn < maxTurn) {
+				p2TurnWord.textContent = wordInput.value;
+				p2TurnScore.textContent = wordScoreInput.value;
+			}
+
+			// Update player 2's score
+			p2TotalScore += Number(wordScoreInput.value);
+			p2DisplayScore.textContent = p2TotalScore;
+
+			iTurn++;
 		}
+
+		// Update player
+		nextPlayer();
+
+		// Reset turn data field
+		resetInputFields();
 	}
+	
+	hasWordInput = false;
+	hasWordScoreInput = false;
 })
+
+function errorAlert(element, count, interval) {
+
+	var isError = true;
+	var i = 0;
+	var errorAlertCount = Number(count * 2);
+
+	functionBlink();
+
+	function functionBlink() {
+	    
+	    if (isError) {
+	    	element.classList.add("blinkyAlert");
+	    } else {
+	    	element.classList.remove("blinkyAlert");
+	    }
+	    isError = !isError;
+		i++;
+
+	    if( i < errorAlertCount ){
+	        setTimeout(functionBlink, interval);
+	    }
+	}
+}
 
 skipButton.addEventListener("click", function() {
 
